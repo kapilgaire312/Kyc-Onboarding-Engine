@@ -2,19 +2,19 @@ from datetime import date
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
 
 class Customer_Info(BaseModel):
     name: str = Field(min_length=3)
-    Dob: date
+    dob: date
     citizenship_no: str = Field(pattern=r"\d{2}-\d{2}-\d{2}-\d{5}")
-    address: str = Field(min_length=5)
     citizenship_issue_date: date
 
     # field validator to check age is atleast 18
-    @field_validator("Dob", mode="after")
+    @field_validator("dob", mode="after")
     @classmethod
     def ensure_18_plus(cls, dob: date):
         today = date.today()
@@ -55,8 +55,18 @@ def validation_exception_handler(request: Request, exc: RequestValidationError):
         errors.append({"field": f"{error['loc'][1]}", "message": error["msg"]})
 
     return JSONResponse(
-        status_code=422, content={"message": "Validation Failed", "errors": errors}
+        status_code=422, content={"message": "Unprocessable Entity", "errors": errors}
     )
+
+
+# Allow all origins, methods, and headers for testing with html file
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get(path="/")
@@ -64,7 +74,7 @@ def read_root():
     return {"message": "hello "}
 
 
-@app.put("/new_user")
+@app.post("/api/v1/kyc/verify")
 def add_user(customer_data: Customer_Info):
     print(customer_data.model_dump())
     return {"message": "success"}
