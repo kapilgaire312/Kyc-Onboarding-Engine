@@ -1,7 +1,9 @@
 from datetime import date
 
-from fastapi import FastAPI
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field, field_validator
 
 
 class Customer_Info(BaseModel):
@@ -39,6 +41,22 @@ class Customer_Info(BaseModel):
 
 
 app = FastAPI()
+
+
+# Custom handle the pydantic validation errror
+# it is converted to RequestValidationError by fastapi
+
+
+@app.exception_handler(RequestValidationError)
+def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print(exc.errors())
+    errors = []
+    for error in exc.errors():
+        errors.append({"field": f"{error['loc'][1]}", "message": error["msg"]})
+
+    return JSONResponse(
+        status_code=422, content={"message": "Validation Failed", "errors": errors}
+    )
 
 
 @app.get(path="/")
