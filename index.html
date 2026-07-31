@@ -1,125 +1,126 @@
 <!doctype html>
 <html>
+  <head>
+    <title>KYC Onboarding</title>
 
-<head>
-  <title>KYC Onboarding</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-    }
-
-    #container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    form {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 350px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      box-sizing: border-box;
-    }
-
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 10px;
-      background: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    #result {
-      margin-top: 20px;
-      text-align: center;
-      font-weight: bold;
-      color: green;
-    }
-  </style>
-</head>
-
-<body>
-  <div id="container">
-    <form>
-      <h2>KYC Onboarding</h2>
-
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" required />
-
-      <label for="dob">Date of Birth</label>
-      <input type="date" id="dob" name="dob" required />
-
-      <label for="address">Address</label>
-      <input type="text" id="address" name="address" required />
-
-      <label for="citizenshipNo">Citizenship Number</label>
-      <input type="text" id="citizenshipNo" name="citizenshipNo" required />
-
-      <label for="issueDate">Citizenship Issue Date</label>
-      <input type="date" id="issueDate" name="issueDate" required />
-
-      <button type="submit">Submit</button>
-    </form>
-    <p id="result"></p>
-  </div>
-  <script>
-    let name = document.getElementById("name");
-    let dob = document.getElementById("dob");
-    let address = document.getElementById("address");
-    let citizenshipNo = document.getElementById("citizenshipNo");
-    let issueDate = document.getElementById("issueDate");
-
-    document.querySelector("form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      let data = {
-        name: name.value,
-        dob: dob.value,
-        address: address.value,
-        citizenship_no: citizenshipNo.value,
-        citizenship_issue_date: issueDate.value,
-      };
-      console.log(data);
-      document.getElementById("result").style.color = "green";
-      let res = await fetch("http://localhost:8000/api/v1/kyc/verify", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      let result = await res.json();
-      console.log(result);
-      document.getElementById("result").innerText = result.message;
-      if (result.errors) {
-        document.getElementById("result").innerText += "\nErrors: " + JSON.stringify(result.errors);
-        document.getElementById("result").style.color = "red";
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
       }
-    });
-  </script>
-</body>
 
+      #container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      form {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 350px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        box-sizing: border-box;
+      }
+
+      button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 10px;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #0056b3;
+      }
+
+      #result {
+        margin-top: 20px;
+        text-align: center;
+        font-weight: bold;
+        color: green;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container">
+      <form>
+        <h2>KYC Onboarding</h2>
+
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" name="dob" required />
+
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address" required />
+
+        <label for="citizenshipNo">Citizenship Number</label>
+        <input type="text" id="citizenshipNo" name="citizenshipNo" required />
+
+        <label for="issueDate">Citizenship Issue Date</label>
+        <input type="date" id="issueDate" name="issueDate" required />
+
+        <button type="submit">Submit</button>
+      </form>
+      <p id="result"></p>
+    </div>
+    <script>
+      let name = document.getElementById("name");
+      let dob = document.getElementById("dob");
+      let address = document.getElementById("address");
+      let citizenshipNo = document.getElementById("citizenshipNo");
+      let issueDate = document.getElementById("issueDate");
+
+      document.querySelector("form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        console.log(issueDate.value);
+        let data = {
+          name: name.value,
+          dob: dob.value,
+          address: address.value,
+          citizenship_no: citizenshipNo.value,
+          citizenship_issue_date: issueDate.value,
+        };
+        console.log(data);
+        document.getElementById("result").style.color = "green";
+        let res = await fetch("http://localhost:8000/api/v1/kyc/verify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        let result = await res.json();
+        console.log(result);
+        document.getElementById("result").innerText = result.message;
+        if (result.errors) {
+          document.getElementById("result").innerText +=
+            "\nErrors: " + JSON.stringify(result.errors);
+          document.getElementById("result").style.color = "red";
+        }
+      });
+    </script>
+  </body>
 </html>
+

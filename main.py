@@ -39,6 +39,8 @@ class Customer_Info(BaseModel):
         if issue_date > today:
             raise ValueError("Citizenship issue date cannot be in future.")
 
+        return issue_date
+
 
 app = FastAPI()
 
